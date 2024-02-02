@@ -3,12 +3,12 @@ import streamlit as st
 import os
 import json
 
-def character_page(file_path, user, relation, situation):
+def character_page(file_path, user, relation, situation, content):
     st.title("Fiction Comes True")
     overall_chain = Character(file_path, user, relation, situation)
     
     if "messages" not in st.session_state:
-        st.session_state.messages = [{"role": "assistant", "content": "안녕하세요? 어떤 일로 찾아오셨어요?"}]
+        st.session_state.messages = [{"role": "assistant", "content": content}]
     
     for message in st.session_state.messages:
         st.chat_message(message["role"]).write(message["content"])
@@ -25,8 +25,8 @@ def character_page(file_path, user, relation, situation):
             assistant_response = overall_chain.receive_chat(prompt)
             message_placeholder.markdown(assistant_response)
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
-    
-    save_conversation_to_json(st.session_state.messages, "conversation.json")
+        
+    save_conversation_to_json(st.session_state.messages, "data/conversation.json")
 
 def save_conversation_to_json(messages, filename):
     with open(filename, "w", encoding="utf-8") as json_file:
@@ -37,22 +37,159 @@ def main():
     
     st.sidebar.title("캐릭터 선택")
     
+    with open("data/situation.json", "r", encoding="utf-8") as f:
+        json_data = f.read()
+    
+    situation_data = json.loads(json_data)
+    
     selected_char = st.sidebar.selectbox(
         "대화할 캐릭터를 선택하세요.",
-        ["백설공주", "겨울왕국 엘사", "파워퍼프걸 블로섬", "신의 탑 밤", "나루토", "원피스 루피"]
+        ["선택", "백설공주", "겨울왕국 엘사", "파워퍼프걸 블로섬", "신의 탑 밤", "나루토", "원피스 루피"]
     )
     
     if selected_char == "백설공주":
-        selected_sit = st.sidebar.selectbox(
-            "대화할 상황을 선택하세요.",
-            ["마녀가 사과를 주려고 백설공주에게 찾아간 상황"]
+        user_char = st.sidebar.selectbox(
+            "사용자 캐릭터를 선택하세요.",
+            ["마녀", "난쟁이"]
         )
         
-        user = "마녀"
-        relation = "백설공주의 새엄마이자, 마법을 쓸 줄 아는 마녀. 자기보다 아름다운 백설공주를 질투해 독사과를 주려고 한다."
-        situation = "백설공주(Bot)와 마녀(User)가 백설공주가 지내는 난쟁이 오두막에서 마주친 상황. 마녀는 백설공주에게 사과를 줄지 말지 갈등한다."
+        if user_char == "마녀":
+            sit_data = situation_data[0]
+            selected_sit = st.sidebar.selectbox(
+                "대화할 상황을 선택하세요.",
+                [sit_data["sit_title"]]
+            )
+            user = sit_data["user"]
+            relation = sit_data["relation"]
+            situation = sit_data["sit_prompt"]
+            content = sit_data["sit_line"]
+            character_page("data/snow_white.json", user, relation, situation, content)
         
-        character_page("data/snow_white.json", user, relation, situation)
+        if user_char == "난쟁이":
+            sit_data = situation_data[1]
+            selected_sit = st.sidebar.selectbox(
+                "대화할 상황을 선택하세요.",
+                [sit_data["sit_title"]]
+            )
+            user = sit_data["user"]
+            relation = sit_data["relation"]
+            situation = sit_data["sit_prompt"]
+            content = sit_data["sit_line"]
+            character_page("data/snow_white.json", user, relation, situation, content)
+        
+    if selected_char == "겨울왕국 엘사":
+        user_char = st.sidebar.selectbox(
+            "사용자 캐릭터를 선택하세요.",
+            ["안나"]
+        )
+        
+        if user_char == "안나":
+            sit_data = situation_data[2]
+            selected_sit = st.sidebar.selectbox(
+                "대화할 상황을 선택하세요.",
+                [sit_data["sit_title"]]
+            )
+            user = sit_data["user"]
+            relation = sit_data["relation"]
+            situation = sit_data["sit_prompt"]
+            content = sit_data["sit_line"]
+            character_page("data/elsa.json", user, relation, situation, content)
+    
+    if selected_char == "파워퍼프걸 블로섬":
+        user_char = st.sidebar.selectbox(
+            "사용자 캐릭터를 선택하세요.",
+            ["버블", "버터컵"]
+        )
+        
+        if user_char == "버블":
+            sit_data = situation_data[3]
+            selected_sit = st.sidebar.selectbox(
+                "대화할 상황을 선택하세요.",
+                [sit_data["sit_title"]]
+            )
+            user = sit_data["user"]
+            relation = sit_data["relation"]
+            situation = sit_data["sit_prompt"]
+            content = sit_data["sit_line"]
+            character_page("data/blossom.json", user, relation, situation, content)
+        
+        if user_char == "버터컵":
+            sit_data = situation_data[4]
+            selected_sit = st.sidebar.selectbox(
+                "대화할 상황을 선택하세요.",
+                [sit_data["sit_title"]]
+            )
+            user = sit_data["user"]
+            relation = sit_data["relation"]
+            situation = sit_data["sit_prompt"]
+            content = sit_data["sit_line"]
+            character_page("data/blossom.json", user, relation, situation, content)
+    
+    if selected_char == "신의 탑 밤":
+        user_char = st.sidebar.selectbox(
+            "사용자 캐릭터를 선택하세요.",
+            ["쿤", "엔도르시"]
+        )
+        
+        if user_char == "쿤":
+            sit_data = situation_data[5]
+            selected_sit = st.sidebar.selectbox(
+                "대화할 상황을 선택하세요.",
+                [sit_data["sit_title"]]
+            )
+            user = sit_data["user"]
+            relation = sit_data["relation"]
+            situation = sit_data["sit_prompt"]
+            content = sit_data["sit_line"]
+            character_page("data/bam.json", user, relation, situation, content)
+        
+        if user_char == "엔도르시":
+            sit_data = situation_data[6]
+            selected_sit = st.sidebar.selectbox(
+                "대화할 상황을 선택하세요.",
+                [sit_data["sit_title"]]
+            )
+            user = sit_data["user"]
+            relation = sit_data["relation"]
+            situation = sit_data["sit_prompt"]
+            content = sit_data["sit_line"]
+            character_page("data/bam.json", user, relation, situation, content)
+    
+    if selected_char == "나루토":
+        user_char = st.sidebar.selectbox(
+            "사용자 캐릭터를 선택하세요.",
+            ["사스케"]
+        )
+        
+        if user_char == "사스케":
+            sit_data = situation_data[7]
+            selected_sit = st.sidebar.selectbox(
+                "대화할 상황을 선택하세요.",
+                [sit_data["sit_title"]]
+            )
+            user = sit_data["user"]
+            relation = sit_data["relation"]
+            situation = sit_data["sit_prompt"]
+            content = sit_data["sit_line"]
+            character_page("data/naruto.json", user, relation, situation, content)
+    
+    if selected_char == "원피스 루피":
+        user_char = st.sidebar.selectbox(
+            "사용자 캐릭터를 선택하세요.",
+            ["나미"]
+        )
+        
+        if user_char == "나미":
+            sit_data = situation_data[8]
+            selected_sit = st.sidebar.selectbox(
+                "대화할 상황을 선택하세요.",
+                [sit_data["sit_title"]],
+            )
+            user = sit_data["user"]
+            relation = sit_data["relation"]
+            situation = sit_data["sit_prompt"]
+            content = sit_data["sit_line"]
+            character_page("data/luffy.json", user, relation, situation, content)
         
 
 if __name__ == "__main__" : 

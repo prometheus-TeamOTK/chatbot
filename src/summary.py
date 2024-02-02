@@ -22,6 +22,7 @@ class Summary:
                 {"role": "user", "content": "I will user that summarization for image generation. Make the summary as stable diffusion model prompt."},
                 {"role": "user", "content": "Summary whole context in 50 tokens, and wrote in English."},
                 {"role": "user", "content": "The Example of summary is: naruto, 1boy, solo, male focus, blue eyes, facial mark, looking at viewer, smiling, orange jacket, jacket, closed mouth. You should follow this format."},
+                {"role": "user", "content": "The Example of summary is:  wanostyle, monkey d luffy, smiling, straw hat, looking at viewer, solo, upper body. You should follow this format."},
                 {"role": "assistant", "content": "Yes."},
                 {"role": "user", "content": str(chatting_data)},
                 {"role": "user", "content": self.situation}
@@ -31,8 +32,16 @@ class Summary:
         return response.choices[0].message.content
 
 def main():
-    sum = Summary("src/data/conversation.json", "백설공주(Bot)와 마녀(User)가 백설공주가 지내는 난쟁이 오두막에서 마주친 상황. 마녀는 백설공주에게 사과를 줄지 말지 갈등한다.")
-    print(sum.summary())
+    with open("src/data/situation.json", "r", encoding="utf8") as json_file:
+        json_data = json_file.read()
+        sit_data = json.loads(json_data)
+        sit_data = sit_data[2]
+    
+    sum = Summary("src/data/conversation.json", sit_data['sit_prompt'])
+    data = {"bot": sit_data['bot'], "user": sit_data['user'], "summary": str(sum.summary())}
+    
+    with open("src/data/image.json", "w", encoding="utf-8") as json_file:
+        json.dump(data, json_file, ensure_ascii=False, indent=4) 
 
 if __name__ == "__main__":
     main()
