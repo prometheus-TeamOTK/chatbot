@@ -68,7 +68,7 @@ def get_chatgpt_chain(): # GPT-4를 사용하여 대화를 생성하는 코드
     
     return chatgpt_chain
 
-class OverallChain:
+class Character:
     def __init__(self, file_path, user, relation, situation) -> None:
         self.memory = get_memory()
         self.search_chain = get_search_chain(file_path, user, relation, situation)
@@ -86,14 +86,3 @@ class OverallChain:
     def receive_chat(self, chat):
         review = self.overall_chain.invoke({"chat": chat})
         return review['received_chat']
-
-def main() -> None:
-    overall_chain = OverallChain()
-    
-    while True:
-        received_chat = input("You: ")
-        overall_chain.receive_chat(received_chat)
-        print(overall_chain.memory.load_memory_variables({})['chat_history'])
-
-if __name__ == "__main__":
-    main() 

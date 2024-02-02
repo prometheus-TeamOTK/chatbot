@@ -1,3 +1,2 @@
 *.env
-data/
 *src/.streamlit/secrets.toml

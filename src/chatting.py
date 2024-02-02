@@ -1,11 +1,11 @@
-from character import OverallChain
+from character import Character
 import streamlit as st
 import os
 import json
 
 def character_page(file_path, user, relation, situation):
     st.title("Fiction Comes True")
-    overall_chain = OverallChain(file_path, user, relation, situation)
+    overall_chain = Character(file_path, user, relation, situation)
     
     if "messages" not in st.session_state:
         st.session_state.messages = [{"role": "assistant", "content": "안녕하세요? 어떤 일로 찾아오셨어요?"}]
