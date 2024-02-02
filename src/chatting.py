@@ -6,25 +6,29 @@ import json
 def character_page(file_path, user, relation, situation, content, new_situation):
     st.title("Fiction Comes True")
     
+    # elif 조건: 사용자 캐릭터 바꿀 때 봇 대사 업데이트 안 되는 문제 해결하기 위함
     if "messages" not in st.session_state:
         st.session_state.messages = [{"role": "assistant", "content": content}]
     elif len(st.session_state.messages) == 1:
         st.session_state.messages = [{"role": "assistant", "content": content}]
-        
+
+    # 스토리 전개를 위해 추가한 부분. 5번 이상 대화를 주고받으면 상황이 바뀐다. 
     if len(st.session_state.messages) > 5:
         overall_chain = Character(file_path, user, relation, new_situation)
     else:
         overall_chain = Character(file_path, user, relation, situation)
     
+    # 지금까지 대화한 것 보여 주기
     for message in st.session_state.messages:
         st.chat_message(message["role"]).write(message["content"])
     
+    # 대화 UI
     if prompt := st.chat_input("캐릭터에게 할 말을 입력하세요."):
         st.session_state.messages.append({"role": "user", "content": prompt})
-        
+        # 사용자 인풋 보여 주기
         with st.chat_message("user"):
             st.markdown(prompt)
-        
+        # 봇 대답 보여 주기
         with st.chat_message("assistant"):
             message_placeholder = st.empty()
             full_response = ""
@@ -32,9 +36,10 @@ def character_page(file_path, user, relation, situation, content, new_situation)
             message_placeholder.markdown(assistant_response)
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
         
-    
+    # 지금까지 진행한 대화 json 파일로 저장하기(요약에 넣어 줌)
     save_conversation_to_json(st.session_state.messages, "data/conversation.json")
 
+# 대화 기록을 json 파일로 저장하는 함수
 def save_conversation_to_json(messages, filename):
     with open(filename, "w", encoding="utf-8") as json_file:
         json.dump(messages, json_file, ensure_ascii=False, indent=4)        
@@ -61,6 +66,7 @@ def main():
         )
         
         if user_char == "마녀":
+            # 봇 캐릭터 - 사용자 캐릭터 연결 순서대로 감(스트림릿에서 이거 노가다 안 하는 법 모르겠어서 이렇게 둠 ㅎㅎ)
             sit_data = situation_data[0]
             selected_sit = st.sidebar.selectbox(
                 "대화할 상황을 선택하세요.",
