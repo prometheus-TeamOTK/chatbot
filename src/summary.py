@@ -3,8 +3,14 @@ from openai import OpenAI
 import os
 
 class Summary:
-    def __init__(self, chatting_file, situation):
+    def __init__(self, chatting_file, id):
         self.chatting_file = chatting_file
+        
+        with open("data/situation.json", "r", encoding="utf8") as json_file:
+            json_data = json_file.read()
+        data = json.loads(json_data)
+        situation = data[id]['sit_prompt']
+        print(situation)
         self.situation = situation
     
     def summary(self):
@@ -34,12 +40,12 @@ class Summary:
         return response.choices[0].message.content
 
 def main():
-    with open("src/data/situation.json", "r", encoding="utf8") as json_file:
+    with open("data/situation.json", "r", encoding="utf8") as json_file:
         json_data = json_file.read()
         sit_data = json.loads(json_data)
         sit_data = sit_data[6]
     
-    sum = Summary("src/data/conversation.json", sit_data['sit_prompt'])
+    sum = Summary("data/conversation.json", 0)
     sum = str(sum.summary())
     
     sum1 = sum.split("/")[0]
