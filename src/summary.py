@@ -35,7 +35,7 @@ def main():
     with open("src/data/situation.json", "r", encoding="utf8") as json_file:
         json_data = json_file.read()
         sit_data = json.loads(json_data)
-        sit_data = sit_data[2]
+        sit_data = sit_data[0]
     
     sum = Summary("src/data/conversation.json", sit_data['sit_prompt'])
     data = {"bot": sit_data['bot'], "user": sit_data['user'], "summary": str(sum.summary())}

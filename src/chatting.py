@@ -3,12 +3,18 @@ import streamlit as st
 import os
 import json
 
-def character_page(file_path, user, relation, situation, content):
+def character_page(file_path, user, relation, situation, content, new_situation):
     st.title("Fiction Comes True")
-    overall_chain = Character(file_path, user, relation, situation)
     
     if "messages" not in st.session_state:
         st.session_state.messages = [{"role": "assistant", "content": content}]
+    elif len(st.session_state.messages) == 1:
+        st.session_state.messages = [{"role": "assistant", "content": content}]
+        
+    if len(st.session_state.messages) > 5:
+        overall_chain = Character(file_path, user, relation, new_situation)
+    else:
+        overall_chain = Character(file_path, user, relation, situation)
     
     for message in st.session_state.messages:
         st.chat_message(message["role"]).write(message["content"])
@@ -26,6 +32,7 @@ def character_page(file_path, user, relation, situation, content):
             message_placeholder.markdown(assistant_response)
         st.session_state.messages.append({"role": "assistant", "content": assistant_response})
         
+    
     save_conversation_to_json(st.session_state.messages, "data/conversation.json")
 
 def save_conversation_to_json(messages, filename):
@@ -63,7 +70,8 @@ def main():
             relation = sit_data["relation"]
             situation = sit_data["sit_prompt"]
             content = sit_data["sit_line"]
-            character_page("data/snow_white.json", user, relation, situation, content)
+            new_situation = sit_data['new_prompt']
+            character_page("data/snow_white.json", user, relation, situation, content, new_situation)
         
         if user_char == "난쟁이":
             sit_data = situation_data[1]
@@ -75,7 +83,8 @@ def main():
             relation = sit_data["relation"]
             situation = sit_data["sit_prompt"]
             content = sit_data["sit_line"]
-            character_page("data/snow_white.json", user, relation, situation, content)
+            new_situation = sit_data['new_prompt']
+            character_page("data/snow_white.json", user, relation, situation, content, new_situation)
         
     if selected_char == "겨울왕국 엘사":
         user_char = st.sidebar.selectbox(
@@ -93,7 +102,8 @@ def main():
             relation = sit_data["relation"]
             situation = sit_data["sit_prompt"]
             content = sit_data["sit_line"]
-            character_page("data/elsa.json", user, relation, situation, content)
+            new_situation = sit_data['new_prompt']
+            character_page("data/elsa.json", user, relation, situation, content, new_situation)
     
     if selected_char == "파워퍼프걸 블로섬":
         user_char = st.sidebar.selectbox(
@@ -111,7 +121,8 @@ def main():
             relation = sit_data["relation"]
             situation = sit_data["sit_prompt"]
             content = sit_data["sit_line"]
-            character_page("data/blossom.json", user, relation, situation, content)
+            new_situation = sit_data['new_prompt']
+            character_page("data/blossom.json", user, relation, situation, content, new_situation)
         
         if user_char == "버터컵":
             sit_data = situation_data[4]
@@ -123,7 +134,8 @@ def main():
             relation = sit_data["relation"]
             situation = sit_data["sit_prompt"]
             content = sit_data["sit_line"]
-            character_page("data/blossom.json", user, relation, situation, content)
+            new_situation = sit_data['new_prompt']
+            character_page("data/blossom.json", user, relation, situation, content, new_situation)
     
     if selected_char == "신의 탑 밤":
         user_char = st.sidebar.selectbox(
@@ -141,7 +153,8 @@ def main():
             relation = sit_data["relation"]
             situation = sit_data["sit_prompt"]
             content = sit_data["sit_line"]
-            character_page("data/bam.json", user, relation, situation, content)
+            new_situation = sit_data['new_prompt']
+            character_page("data/bam.json", user, relation, situation, content, new_situation)
         
         if user_char == "엔도르시":
             sit_data = situation_data[6]
@@ -153,7 +166,8 @@ def main():
             relation = sit_data["relation"]
             situation = sit_data["sit_prompt"]
             content = sit_data["sit_line"]
-            character_page("data/bam.json", user, relation, situation, content)
+            new_situation = sit_data['new_prompt']
+            character_page("data/bam.json", user, relation, situation, content, new_situation)
     
     if selected_char == "나루토":
         user_char = st.sidebar.selectbox(
@@ -171,7 +185,8 @@ def main():
             relation = sit_data["relation"]
             situation = sit_data["sit_prompt"]
             content = sit_data["sit_line"]
-            character_page("data/naruto.json", user, relation, situation, content)
+            new_situation = sit_data['new_prompt']
+            character_page("data/naruto.json", user, relation, situation, content, new_situation)
     
     if selected_char == "원피스 루피":
         user_char = st.sidebar.selectbox(
@@ -189,7 +204,8 @@ def main():
             relation = sit_data["relation"]
             situation = sit_data["sit_prompt"]
             content = sit_data["sit_line"]
-            character_page("data/luffy.json", user, relation, situation, content)
+            new_situation = sit_data['new_prompt']
+            character_page("data/luffy.json", user, relation, situation, content, new_situation)
         
 
 if __name__ == "__main__" : 
