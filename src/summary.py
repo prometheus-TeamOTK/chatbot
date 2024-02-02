@@ -20,9 +20,11 @@ class Summary:
                 {"role": "user", "content": "Summarize the following conversation with the given situation."},
                 {"role": "user", "content": "Do not use word 'Bot' or 'User' in the summary. Just use character name."},
                 {"role": "user", "content": "I will user that summarization for image generation. Make the summary as stable diffusion model prompt."},
-                {"role": "user", "content": "Summary whole context in 50 tokens, and wrote in English."},
-                {"role": "user", "content": "The Example of summary is: naruto, 1boy, solo, male focus, blue eyes, facial mark, looking at viewer, smiling, orange jacket, jacket, closed mouth. You should follow this format."},
-                {"role": "user", "content": "The Example of summary is:  wanostyle, monkey d luffy, smiling, straw hat, looking at viewer, solo, upper body. You should follow this format."},
+                {"role": "user", "content": "Summarize whole context in 50 tokens, and wrote in English."},
+                {"role": "user", "content": "Divide the summarized situation into two parts and present it in the form 1. and 2."},
+                {"role": "user", "content": "The Example of summary is: 1. naruto, 1boy, solo, male focus, blue eyes, facial mark, looking at viewer / 2. smiling, orange jacket, jacket, closed mouth. You should follow this format."},
+                {"role": "user", "content": "The Example of summary is: 1. Endorsi, confessing love, sincerely / 2. Bam, accepting love, shyly"},
+                {"role": "user", "content": "Do not use \n in the summary. Just use / to divide the summary."},
                 {"role": "assistant", "content": "Yes."},
                 {"role": "user", "content": str(chatting_data)},
                 {"role": "user", "content": self.situation}
@@ -35,10 +37,19 @@ def main():
     with open("src/data/situation.json", "r", encoding="utf8") as json_file:
         json_data = json_file.read()
         sit_data = json.loads(json_data)
-        sit_data = sit_data[0]
+        sit_data = sit_data[6]
     
     sum = Summary("src/data/conversation.json", sit_data['sit_prompt'])
-    data = {"bot": sit_data['bot'], "user": sit_data['user'], "summary": str(sum.summary())}
+    sum = str(sum.summary())
+    
+    sum1 = sum.split("/")[0]
+    sum2 = sum.split("/")[1]
+    
+    sum1 = sum1.replace("1. ", "")
+    sum2 = sum2.replace("2. ", "")
+    sum2 = sum2.replace("\n", "")
+    
+    data = {"bot": sit_data['bot'], "user": sit_data['user'], "summary": [sum1, sum2]}
     
     with open("src/data/image.json", "w", encoding="utf-8") as json_file:
         json.dump(data, json_file, ensure_ascii=False, indent=4) 
